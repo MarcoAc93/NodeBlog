@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="ModuloPrincipal">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+	<title>Blog Con Node</title>
+</head>
+<body ng-controller="mainController">
+	
+	<div class="container">
+
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<p class="navbar-brand">BlogNode</p>
+				</div>
+				<ul class="nav navbar-nav">
+					<li><a data-toggle="modal" data-target="#modalRegistro">Registro</a></li>
+					<li><a data-toggle="modal" data-target="#modalSesion">Iniciar Sesion</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		
+
+		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalCreate">Nuevo Post</button>
+		
+		<br><br>
+		
+		<div class="panel panel-default" ng-repeat="post in posts">
+			<div class="panel-heading">
+				<h3 type="button" ng-click="readPost(post)" data-toggle="modal" data-target="#modalRead">{{post.titulo}}</h3>
+			</div>
+			<div class="panel-body">
+				<p>{{post.descripcion}}</p>
+			</div>
+		</div>
+		
+		<div class="modal fade" id="modalRead" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">{{post.titulo}}</h4>
+			  </div>
+			  <div class="modal-body">
+				<div>
+					<h4>{{post.descripcion}}</h4>
+				</div>
+				<div>
+					<p>{{post.contenido}}</p>
+				</div>
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-warning" data-dismiss="modal" data-toggle="modal" data-target="#modalEdit" ng-click="readPost(post)">Editar</button>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+
+		<div class="modal fade" id="modalCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Crear Nuevo Post</h4>
+			  </div>
+			  <div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="titulo">Titulo</label>
+						<input type="text" class="form-control" id="titulo" name="titulo" ng-model="formInfo.titulo" value="{{singlePost.titulo}}" ng-required="boolean">
+					</div>
+					<div class="form-group">
+						<label for="descripcion">Descripcion</label>
+						<input type="text" class="form-control" id="descripcion" name="descripcion" ng-model="formInfo.descripcion" ng-required="boolean">
+					</div>
+					<div class="form-group">
+						<label for="contenido">Contenido</label>
+						<textarea name="contenido" class="form-control" id="contenido" cols="30" rows="10" ng-model="formInfo.contenido" ng-required="boolean">Contenido</textarea>
+					</div>
+				</form>
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-primary" ng-click="createPost()" data-dismiss="modal">Crear Post</button>
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+		<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Editar {{post.titulo}}</h4>
+			  </div>
+			  <div class="modal-body">
+				<form method="POST">
+
+					<div class="form-group">
+						<label for="{{post.titulo}}">Titulo</label>
+						<input type="text" ng-value="{{post.titulo}}" class="form-control" id="{{post.titulo}}" name="titulo" ng-model="post.titulo" required="true">
+					</div>
+
+					<div class="form-group">
+						<label for="descripcion">Descripcion</label>
+						<input type="text" class="form-control" id="descripcion" name="descripcion" ng-model="post.descripcion" required="true">
+					</div>
+
+					<div class="form-group">
+						<label for="contenido">Contenido</label>
+						<textarea name="contenido" class="form-control" id="contenido" cols="30" rows="10" ng-model="post.contenido" required="true"></textarea>
+					</div>
+
+				</form>
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-primary" ng-click="updatePost(post)" data-dismiss="modal">Editar</button>
+				<button type="button" class="btn btn-danger"  ng-click="deletePost(post)" data-dismiss="modal">Eliminar</button>
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+		<div class="modal fade" id="modalRegistro" ng-controller="singupController" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Registro</h4>
+			  </div>
+			  <div class="modal-body">
+				<form method="POST">
+
+					<div class="form-group">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" id="nombre" name="nombre" ng-model="formRegistro.nombre" required="true">
+					</div>
+
+					<div class="form-group">
+						<label for="username">Username</label>
+						<input type="text" class="form-control" id="username" name="username" ng-model="formRegistro.username" required="true">
+					</div>
+
+					<div class="form-group">
+						<label for="email">Email</label>
+						<input type="email" class="form-control" id="email" name="email" ng-model="formRegistro.email" required="true">
+					</div>
+
+					<div class="form-group">
+						<label for="password">Password</label>
+						<input type="password" class="form-control" id="password" name="password" ng-model="formRegistro.password" required="true">
+					</div>
+
+				</form>
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+				<button type="button" class="btn btn-success" ng-click="submitForm()" data-dismiss="modal">Registrarse</button>
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+		
+		
+	</div>
+
+
+
+
+
+
+
+
+
+
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+	<script src="main.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>
